@@ -6,6 +6,17 @@ All notable changes to DockKey will be documented in this file.
 
 ## Unreleased
 
+## 0.4.0 - 2026-06-12
+
+### Added
+
+- Added English and Simplified Chinese localization with a follow-system default and manual language picker.
+- Double-clicking DockKey now opens the settings window while launch-at-login stays quiet.
+
+### Fixed
+
+- Fixed GitHub Release parsing for update checks.
+
 ## 0.3.0 - 2026-06-12
 
 ### Changed

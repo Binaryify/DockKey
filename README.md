@@ -30,8 +30,9 @@ Then open DockKey again.
 - Can show or hide the menu bar icon.
 - Can show or hide the Dock icon.
 - Can start automatically after login.
-- Shows the app version in settings and supports copying version info.
+- Shows the app version in settings.
 - Can check GitHub Releases for updates and download the latest DMG.
+- Follows your macOS language by default, with manual English and Simplified Chinese options.
 
 ## Why DockKey
 
@@ -74,7 +75,7 @@ build/DockKey.app
 Build with a specific version:
 
 ```sh
-make app VERSION=0.3.0 BUILD_NUMBER=3
+make app VERSION=0.4.0 BUILD_NUMBER=4
 ```
 
 Create distributable archives:

@@ -50,10 +50,10 @@ final class LaunchAtLoginManager {
         let bundleURL = Bundle.main.bundleURL
 
         if bundleURL.pathExtension == "app" {
-            return ["/usr/bin/open", "-gj", bundleURL.path]
+            return ["/usr/bin/open", "-gj", bundleURL.path, "--args", AppLaunchArguments.launchAtLogin]
         }
 
-        return [Bundle.main.executableURL?.path ?? CommandLine.arguments[0]]
+        return [Bundle.main.executableURL?.path ?? CommandLine.arguments[0], AppLaunchArguments.launchAtLogin]
     }
 
     private var launchAgentURL: URL {

@@ -1,14 +1,15 @@
 APP_NAME := DockKey
 BUNDLE_ID := dev.binaryify.dockkey
 EXECUTABLE_NAME := DockKey
-VERSION := 0.3.0
-BUILD_NUMBER := 3
+VERSION := 0.4.0
+BUILD_NUMBER := 4
 CONFIG := release
 BUILD_DIR := build
 DIST_DIR := dist
 APP_DIR := $(BUILD_DIR)/$(APP_NAME).app
 EXECUTABLE := .build/$(CONFIG)/$(EXECUTABLE_NAME)
 ASSETS_DIR := Assets
+RESOURCES_DIR := Sources/$(EXECUTABLE_NAME)/Resources
 ARTIFACT_VERSION ?= $(VERSION)
 ARTIFACT_BASENAME := $(APP_NAME)-$(ARTIFACT_VERSION)-arm64
 DMG_ROOT := $(BUILD_DIR)/dmg
@@ -28,13 +29,14 @@ app: build
 	cp "$(EXECUTABLE)" "$(APP_DIR)/Contents/MacOS/$(APP_NAME)"
 	cp "$(ASSETS_DIR)/AppIcon.icns" "$(APP_DIR)/Contents/Resources/AppIcon.icns"
 	cp "$(ASSETS_DIR)/MenuBarIconTemplate.png" "$(APP_DIR)/Contents/Resources/MenuBarIconTemplate.png"
+	cp -R "$(RESOURCES_DIR)"/*.lproj "$(APP_DIR)/Contents/Resources/"
 	printf '%s\n' \
 	'<?xml version="1.0" encoding="UTF-8"?>' \
 	'<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' \
 	'<plist version="1.0">' \
 	'<dict>' \
 	'  <key>CFBundleDevelopmentRegion</key>' \
-	'  <string>zh_CN</string>' \
+	'  <string>en</string>' \
 	'  <key>CFBundleExecutable</key>' \
 	'  <string>$(APP_NAME)</string>' \
 	'  <key>CFBundleIdentifier</key>' \
@@ -43,6 +45,11 @@ app: build
 	'  <string>AppIcon</string>' \
 	'  <key>CFBundleInfoDictionaryVersion</key>' \
 	'  <string>6.0</string>' \
+	'  <key>CFBundleLocalizations</key>' \
+	'  <array>' \
+	'    <string>en</string>' \
+	'    <string>zh-Hans</string>' \
+	'  </array>' \
 	'  <key>CFBundleName</key>' \
 	'  <string>$(APP_NAME)</string>' \
 	'  <key>CFBundlePackageType</key>' \

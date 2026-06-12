@@ -4,7 +4,7 @@ import Foundation
 
 final class AppModel: ObservableObject {
     @Published private(set) var dockApps: [DockApp] = []
-    @Published private(set) var hotKeyStatus = "正在启用快捷键..."
+    @Published private(set) var hotKeyStatus = L10n.tr("hotkeys.enabling")
     @Published private(set) var launchAtLoginMessage = ""
     @Published private(set) var launchAtLoginEnabled: Bool
     @Published private(set) var updateStatus = ""
@@ -27,11 +27,19 @@ final class AppModel: ObservableObject {
             registerHotKeys()
         }
     }
+    @Published var appLanguage: AppLanguage {
+        didSet {
+            appLanguage.save()
+            refreshLocalizedText()
+            onLanguageChanged?()
+        }
+    }
 
     var onDockAppsChanged: (() -> Void)?
     var onShortcutsChanged: (() -> Void)?
     var onStatusItemVisibilityChanged: (() -> Void)?
     var onDockIconVisibilityChanged: (() -> Void)?
+    var onLanguageChanged: (() -> Void)?
 
     private let dockAppReader = DockAppReader()
     private let appLauncher = AppLauncher()
@@ -40,10 +48,16 @@ final class AppModel: ObservableObject {
     private let hotKeyManager = HotKeyManager()
     private var dockSignature = ""
     private var refreshTimer: Timer?
+    private var hotKeyFailureSummary: String?
+    private var launchAtLoginMessageKey: String?
+    private var launchAtLoginMessageArgument: String?
+    private var updateStatusKey: String?
+    private var updateStatusArgument: String?
 
     init() {
         let savedModifier = UserDefaults.standard.string(forKey: Self.modifierDefaultsKey)
         modifier = savedModifier.flatMap(HotKeyModifier.init(rawValue:)) ?? .command
+        appLanguage = AppLanguage.current
         launchAtLoginEnabled = launchAtLoginManager.isEnabled
         showsStatusItem = UserDefaults.standard.object(forKey: Self.showsStatusItemDefaultsKey) as? Bool ?? true
         showsDockIcon = UserDefaults.standard.object(forKey: Self.showsDockIconDefaultsKey) as? Bool ?? false
@@ -108,10 +122,10 @@ final class AppModel: ObservableObject {
         do {
             try launchAtLoginManager.setEnabled(enabled)
             launchAtLoginEnabled = enabled
-            launchAtLoginMessage = enabled ? "已设置登录后自动启动" : ""
+            setLaunchAtLoginMessage(enabled ? "launchAtLogin.enabled" : nil)
         } catch {
             launchAtLoginEnabled = launchAtLoginManager.isEnabled
-            launchAtLoginMessage = "开机启动设置失败: \(error.localizedDescription)"
+            setLaunchAtLoginMessage("launchAtLogin.failed", argument: error.localizedDescription)
         }
     }
 
@@ -121,32 +135,32 @@ final class AppModel: ObservableObject {
         }
 
         isCheckingForUpdates = true
-        updateStatus = "正在检查更新..."
+        setUpdateStatus("update.checking")
 
         Task {
             do {
                 guard let update = try await updateManager.latestUpdate() else {
                     await MainActor.run {
-                        self.updateStatus = "已是最新版本"
+                        self.setUpdateStatus("update.latest")
                         self.isCheckingForUpdates = false
                     }
                     return
                 }
 
                 await MainActor.run {
-                    self.updateStatus = "发现 \(update.tagName)，正在下载..."
+                    self.setUpdateStatus("update.foundDownloading", argument: update.tagName)
                 }
 
                 let downloadedURL = try await updateManager.download(update)
 
                 await MainActor.run {
-                    self.updateStatus = "已下载 \(update.tagName)，正在打开安装包"
+                    self.setUpdateStatus("update.downloadedOpening", argument: update.tagName)
                     self.isCheckingForUpdates = false
                     NSWorkspace.shared.open(downloadedURL)
                 }
             } catch {
                 await MainActor.run {
-                    self.updateStatus = "更新失败: \(error.localizedDescription)"
+                    self.setUpdateStatus("update.failed", argument: error.localizedDescription)
                     self.isCheckingForUpdates = false
                 }
             }
@@ -158,17 +172,65 @@ final class AppModel: ObservableObject {
         let failures = statuses.enumerated().filter { _, status in status != noErr }
 
         if failures.isEmpty {
-            hotKeyStatus = "快捷键已启用"
+            hotKeyFailureSummary = nil
+            refreshHotKeyStatus()
             onShortcutsChanged?()
             return
         }
 
-        let failedKeys = failures
+        hotKeyFailureSummary = failures
             .map { index, status in "\(ShortcutKey.allCases[index].label)(\(status))" }
             .joined(separator: ", ")
 
-        hotKeyStatus = "部分快捷键被占用: \(failedKeys)"
+        refreshHotKeyStatus()
         onShortcutsChanged?()
+    }
+
+    private func refreshLocalizedText() {
+        refreshHotKeyStatus()
+        refreshLaunchAtLoginMessage()
+        refreshUpdateStatus()
+    }
+
+    private func refreshHotKeyStatus() {
+        if let hotKeyFailureSummary {
+            hotKeyStatus = L10n.tr("hotkeys.partialFailures", hotKeyFailureSummary)
+            return
+        }
+
+        hotKeyStatus = L10n.tr("hotkeys.enabled")
+    }
+
+    private func setLaunchAtLoginMessage(_ key: String?, argument: String? = nil) {
+        launchAtLoginMessageKey = key
+        launchAtLoginMessageArgument = argument
+        refreshLaunchAtLoginMessage()
+    }
+
+    private func refreshLaunchAtLoginMessage() {
+        launchAtLoginMessage = localizedStatus(key: launchAtLoginMessageKey, argument: launchAtLoginMessageArgument)
+    }
+
+    private func setUpdateStatus(_ key: String?, argument: String? = nil) {
+        updateStatusKey = key
+        updateStatusArgument = argument
+        refreshUpdateStatus()
+    }
+
+    private func refreshUpdateStatus() {
+        updateStatus = localizedStatus(key: updateStatusKey, argument: updateStatusArgument)
+    }
+
+    private func localizedStatus(key: String?, argument: String?) -> String {
+        guard let key else {
+            return ""
+        }
+
+        if let argument {
+            return L10n.tr(key, argument)
+        }
+
+        return L10n.tr(key)
     }
 
     private func startRefreshTimer() {

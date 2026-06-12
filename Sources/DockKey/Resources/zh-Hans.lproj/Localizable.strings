@@ -1,0 +1,50 @@
+"button.ok" = "好的";
+"button.refresh" = "刷新";
+"button.checkUpdates" = "检查更新";
+"button.checking" = "检查中";
+
+"menu.preferences" = "偏好设置...";
+"menu.about" = "关于 %@";
+"menu.quit" = "退出 %@";
+"menu.checkUpdates" = "检查更新";
+"menu.refreshDockApps" = "刷新 Dock App";
+
+"settings.modifier" = "修饰键";
+"settings.language" = "语言";
+"settings.currentShortcut" = "当前组合";
+"settings.statusBar" = "状态栏";
+"settings.showMenuBarIcon" = "显示菜单栏图标";
+"settings.dock" = "Dock";
+"settings.showDockIcon" = "显示 Dock 图标";
+"settings.launchAtLogin" = "开机启动";
+"settings.launchAfterLogin" = "登录后自动启动";
+"settings.version" = "版本";
+"settings.updates" = "更新";
+
+"shortcut.range" = "%@1 到 %@0";
+
+"language.system" = "跟随系统";
+"language.english" = "English";
+"language.simplifiedChinese" = "简体中文";
+
+"hotkeys.enabling" = "正在启用快捷键...";
+"hotkeys.enabled" = "快捷键已启用";
+"hotkeys.partialFailures" = "部分快捷键被占用: %@";
+
+"launchAtLogin.enabled" = "已设置登录后自动启动";
+"launchAtLogin.failed" = "开机启动设置失败: %@";
+
+"update.checking" = "正在检查更新...";
+"update.latest" = "已是最新版本";
+"update.foundDownloading" = "发现 %@，正在下载...";
+"update.downloadedOpening" = "已下载 %@，正在打开安装包";
+"update.failed" = "更新失败: %@";
+"update.error.rateLimited" = "GitHub API 访问频率受限，请稍后重试";
+"update.error.releaseNotFound" = "未找到 GitHub Release";
+"update.error.lookupFailed" = "无法读取 GitHub 版本信息";
+"update.error.invalidReleaseData" = "无法解析 GitHub 版本信息";
+"update.error.noDownloadAsset" = "未找到可下载的 arm64 安装包";
+"update.error.downloadFailed" = "安装包下载失败";
+
+"version.display" = "版本 %@";
+"version.development" = "开发版";

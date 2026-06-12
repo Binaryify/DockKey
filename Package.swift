@@ -4,6 +4,7 @@ import PackageDescription
 
 let package = Package(
     name: "DockKey",
+    defaultLocalization: "en",
     platforms: [
         .macOS(.v13)
     ],
@@ -11,6 +12,11 @@ let package = Package(
         .executable(name: "DockKey", targets: ["DockKey"])
     ],
     targets: [
-        .executableTarget(name: "DockKey")
+        .executableTarget(
+            name: "DockKey",
+            resources: [
+                .process("Resources")
+            ]
+        )
     ]
 )

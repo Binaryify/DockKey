@@ -30,8 +30,9 @@ xattr -r -d com.apple.quarantine /Applications/DockKey.app
 - 支持显示/隐藏菜单栏图标。
 - 支持显示/隐藏 Dock 图标。
 - 支持登录后自动启动。
-- 设置页显示版本号，并支持复制版本信息。
+- 设置页显示版本号。
 - 支持检查 GitHub Releases 更新，并下载最新 DMG。
+- 默认跟随 macOS 语言，也可以手动切换英文或简体中文。
 
 ## 为什么做 DockKey
 
@@ -74,7 +75,7 @@ build/DockKey.app
 指定版本号打包：
 
 ```sh
-make app VERSION=0.3.0 BUILD_NUMBER=3
+make app VERSION=0.4.0 BUILD_NUMBER=4
 ```
 
 生成分发包：

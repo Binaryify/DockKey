@@ -55,7 +55,7 @@ final class AppUpdateManager {
     private func latestRelease() async throws -> GitHubRelease {
         var request = URLRequest(url: Self.latestReleaseURL)
         request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
-        request.setValue("2026-03-10", forHTTPHeaderField: "X-GitHub-Api-Version")
+        request.setValue("2022-11-28", forHTTPHeaderField: "X-GitHub-Api-Version")
         request.setValue("\(AppInfo.name)/\(AppVersion.current.version)", forHTTPHeaderField: "User-Agent")
 
         let (data, response) = try await URLSession.shared.data(for: request)
@@ -68,7 +68,11 @@ final class AppUpdateManager {
             throw UpdateError.releaseLookupFailed(statusCode: httpResponse.statusCode)
         }
 
-        return try JSONDecoder.github.decode(GitHubRelease.self, from: data)
+        do {
+            return try JSONDecoder.github.decode(GitHubRelease.self, from: data)
+        } catch {
+            throw UpdateError.invalidReleaseData
+        }
     }
 
     private static func normalizedVersion(_ version: String) -> String {
@@ -113,6 +117,13 @@ private struct GitHubRelease: Decodable {
     let body: String?
     let assets: [GitHubReleaseAsset]
 
+    private enum CodingKeys: String, CodingKey {
+        case tagName = "tag_name"
+        case htmlURL = "html_url"
+        case body
+        case assets
+    }
+
     var preferredDownloadAsset: GitHubReleaseAsset? {
         assets.first { asset in
             asset.name.hasSuffix(".dmg")
@@ -129,10 +140,16 @@ private struct GitHubRelease: Decodable {
 private struct GitHubReleaseAsset: Decodable {
     let name: String
     let browserDownloadURL: URL
+
+    private enum CodingKeys: String, CodingKey {
+        case name
+        case browserDownloadURL = "browser_download_url"
+    }
 }
 
 private enum UpdateError: LocalizedError {
     case releaseLookupFailed(statusCode: Int?)
+    case invalidReleaseData
     case noDownloadAsset
     case downloadFailed
 
@@ -140,26 +157,26 @@ private enum UpdateError: LocalizedError {
         switch self {
         case .releaseLookupFailed(let statusCode):
             if statusCode == 403 {
-                return "GitHub API 访问频率受限，请稍后重试"
+                return L10n.tr("update.error.rateLimited")
             }
 
             if statusCode == 404 {
-                return "未找到 GitHub Release"
+                return L10n.tr("update.error.releaseNotFound")
             }
 
-            return "无法读取 GitHub 版本信息"
+            return L10n.tr("update.error.lookupFailed")
+        case .invalidReleaseData:
+            return L10n.tr("update.error.invalidReleaseData")
         case .noDownloadAsset:
-            return "未找到可下载的 arm64 安装包"
+            return L10n.tr("update.error.noDownloadAsset")
         case .downloadFailed:
-            return "安装包下载失败"
+            return L10n.tr("update.error.downloadFailed")
         }
     }
 }
 
 private extension JSONDecoder {
     static var github: JSONDecoder {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return decoder
+        JSONDecoder()
     }
 }

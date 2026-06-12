@@ -10,9 +10,9 @@ struct PreferencesView: View {
             Divider()
 
             settings
-                .padding(EdgeInsets(top: 20, leading: 22, bottom: 22, trailing: 22))
+                .padding(EdgeInsets(top: 16, leading: 22, bottom: 20, trailing: 22))
         }
-        .frame(width: 560, height: 480)
+        .frame(width: 620, height: 500)
         .background(Color(nsColor: .windowBackgroundColor))
     }
 
@@ -37,17 +37,28 @@ struct PreferencesView: View {
             Button {
                 model.refreshDockApps(force: true)
             } label: {
-                Label("刷新", systemImage: "arrow.clockwise")
+                Label(L10n.tr("button.refresh"), systemImage: "arrow.clockwise")
             }
             .labelStyle(.titleAndIcon)
             .keyboardShortcut("r", modifiers: [.command])
         }
-        .padding(EdgeInsets(top: 18, leading: 22, bottom: 14, trailing: 22))
+        .padding(EdgeInsets(top: 10, leading: 22, bottom: 14, trailing: 22))
     }
 
     private var settings: some View {
         VStack(alignment: .leading, spacing: 16) {
-            SettingRow(title: "修饰键") {
+            SettingRow(title: L10n.tr("settings.language")) {
+                Picker("", selection: $model.appLanguage) {
+                    ForEach(AppLanguage.allCases) { language in
+                        Text(language.title).tag(language)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .labelsHidden()
+                .frame(width: 360)
+            }
+
+            SettingRow(title: L10n.tr("settings.modifier")) {
                 Picker("", selection: $model.modifier) {
                     ForEach(HotKeyModifier.allCases) { modifier in
                         Text(modifier.title).tag(modifier)
@@ -58,30 +69,30 @@ struct PreferencesView: View {
                 .frame(width: 360)
             }
 
-            SettingRow(title: "当前组合") {
-                Text("\(model.modifier.symbol)1 到 \(model.modifier.symbol)0")
+            SettingRow(title: L10n.tr("settings.currentShortcut")) {
+                Text(L10n.tr("shortcut.range", model.modifier.symbol, model.modifier.symbol))
                     .foregroundStyle(.secondary)
             }
 
             Divider()
 
-            SettingRow(title: "状态栏") {
-                Toggle("显示菜单栏图标", isOn: $model.showsStatusItem)
+            SettingRow(title: L10n.tr("settings.statusBar")) {
+                Toggle(L10n.tr("settings.showMenuBarIcon"), isOn: $model.showsStatusItem)
                     .toggleStyle(.switch)
             }
 
-            SettingRow(title: "Dock") {
-                Toggle("显示 Dock 图标", isOn: $model.showsDockIcon)
+            SettingRow(title: L10n.tr("settings.dock")) {
+                Toggle(L10n.tr("settings.showDockIcon"), isOn: $model.showsDockIcon)
                     .toggleStyle(.switch)
             }
 
-            SettingRow(title: "开机启动") {
+            SettingRow(title: L10n.tr("settings.launchAtLogin")) {
                 VStack(alignment: .leading, spacing: 4) {
                     Toggle(isOn: Binding(
                         get: { model.launchAtLoginEnabled },
                         set: { model.setLaunchAtLoginEnabled($0) }
                     )) {
-                        Text("登录后自动启动")
+                        Text(L10n.tr("settings.launchAfterLogin"))
                     }
                     .toggleStyle(.switch)
 
@@ -93,22 +104,12 @@ struct PreferencesView: View {
                 }
             }
 
-            SettingRow(title: "版本") {
-                HStack(spacing: 10) {
-                    Text(AppVersion.current.displayText)
-                        .foregroundStyle(.secondary)
-
-                    Spacer()
-
-                    Button {
-                        copyVersion()
-                    } label: {
-                        Label("复制", systemImage: "doc.on.doc")
-                    }
-                }
+            SettingRow(title: L10n.tr("settings.version")) {
+                Text(AppVersion.current.displayText)
+                    .foregroundStyle(.secondary)
             }
 
-            SettingRow(title: "更新") {
+            SettingRow(title: L10n.tr("settings.updates")) {
                 HStack(spacing: 10) {
                     if !model.updateStatus.isEmpty {
                         Text(model.updateStatus)
@@ -121,7 +122,10 @@ struct PreferencesView: View {
                     Button {
                         model.checkForUpdates()
                     } label: {
-                        Label(model.isCheckingForUpdates ? "检查中" : "检查更新", systemImage: "arrow.down.circle")
+                        Label(
+                            model.isCheckingForUpdates ? L10n.tr("button.checking") : L10n.tr("button.checkUpdates"),
+                            systemImage: "arrow.down.circle"
+                        )
                     }
                     .disabled(model.isCheckingForUpdates)
                 }
@@ -136,11 +140,6 @@ struct PreferencesView: View {
                 .stroke(Color(nsColor: .separatorColor), lineWidth: 0.5)
         )
     }
-
-    private func copyVersion() {
-        NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(AppVersion.current.copyText, forType: .string)
-    }
 }
 
 private struct SettingRow<Content: View>: View {
@@ -152,7 +151,7 @@ private struct SettingRow<Content: View>: View {
             Text(title)
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundStyle(.primary)
-                .frame(width: 76, alignment: .leading)
+                .frame(width: 118, alignment: .leading)
 
             content
                 .frame(maxWidth: .infinity, alignment: .leading)

@@ -23,11 +23,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         model.onDockIconVisibilityChanged = { [weak self] in
             self?.updateDockIconVisibility()
         }
+        model.onLanguageChanged = { [weak self] in
+            self?.configureMainMenu()
+            self?.rebuildStatusMenu()
+        }
 
         updateDockIconVisibility()
         updateStatusItemVisibility()
         model.start()
-        showPreferencesIfNeeded()
+        showPreferencesOnLaunchIfNeeded()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -68,7 +72,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         alert.messageText = AppInfo.name
         alert.informativeText = AppVersion.current.displayText
         alert.icon = AppIconProvider.appIcon(size: NSSize(width: 96, height: 96))
-        alert.addButton(withTitle: "好的")
+        alert.addButton(withTitle: L10n.tr("button.ok"))
         alert.runModal()
     }
 
@@ -85,9 +89,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let appMenuItem = NSMenuItem()
         let appMenu = NSMenu()
 
-        appMenu.addItem(NSMenuItem(title: "关于 \(AppInfo.name)", action: #selector(showAbout), keyEquivalent: ""))
+        appMenu.addItem(NSMenuItem(title: L10n.tr("menu.about", AppInfo.name), action: #selector(showAbout), keyEquivalent: ""))
         appMenu.addItem(NSMenuItem.separator())
-        appMenu.addItem(NSMenuItem(title: "退出 \(AppInfo.name)", action: #selector(quit), keyEquivalent: "q"))
+        appMenu.addItem(NSMenuItem(title: L10n.tr("menu.quit", AppInfo.name), action: #selector(quit), keyEquivalent: "q"))
 
         appMenuItem.submenu = appMenu
         mainMenu.addItem(appMenuItem)
@@ -158,10 +162,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(titleItem)
 
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "偏好设置...", action: #selector(showPreferences), keyEquivalent: ","))
-        menu.addItem(NSMenuItem(title: "关于 \(AppInfo.name)", action: #selector(showAbout), keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "检查更新", action: #selector(checkForUpdates), keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "刷新 Dock App", action: #selector(refreshDockApps), keyEquivalent: "r"))
+        menu.addItem(NSMenuItem(title: L10n.tr("menu.preferences"), action: #selector(showPreferences), keyEquivalent: ","))
+        menu.addItem(NSMenuItem(title: L10n.tr("menu.about", AppInfo.name), action: #selector(showAbout), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: L10n.tr("menu.checkUpdates"), action: #selector(checkForUpdates), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: L10n.tr("menu.refreshDockApps"), action: #selector(refreshDockApps), keyEquivalent: "r"))
 
         let visibleShortcutKeys = ShortcutKey.allCases.filter { model.app(for: $0) != nil }
 
@@ -185,19 +189,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "退出 \(AppInfo.name)", action: #selector(quit), keyEquivalent: "q"))
+        menu.addItem(NSMenuItem(title: L10n.tr("menu.quit", AppInfo.name), action: #selector(quit), keyEquivalent: "q"))
 
         statusItem?.menu = menu
     }
 
-    private func showPreferencesIfNeeded() {
-        let key = "DidShowPreferencesOnFirstLaunch"
-
-        guard !UserDefaults.standard.bool(forKey: key) else {
+    private func showPreferencesOnLaunchIfNeeded() {
+        guard !CommandLine.arguments.contains(AppLaunchArguments.launchAtLogin) else {
             return
         }
 
-        UserDefaults.standard.set(true, forKey: key)
         showPreferences()
     }
 }

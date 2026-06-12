@@ -1,0 +1,50 @@
+"button.ok" = "OK";
+"button.refresh" = "Refresh";
+"button.checkUpdates" = "Check for Updates";
+"button.checking" = "Checking";
+
+"menu.preferences" = "Preferences...";
+"menu.about" = "About %@";
+"menu.quit" = "Quit %@";
+"menu.checkUpdates" = "Check for Updates";
+"menu.refreshDockApps" = "Refresh Dock Apps";
+
+"settings.modifier" = "Modifier";
+"settings.language" = "Language";
+"settings.currentShortcut" = "Current Shortcut";
+"settings.statusBar" = "Menu Bar";
+"settings.showMenuBarIcon" = "Show menu bar icon";
+"settings.dock" = "Dock";
+"settings.showDockIcon" = "Show Dock icon";
+"settings.launchAtLogin" = "Launch at Login";
+"settings.launchAfterLogin" = "Open at login";
+"settings.version" = "Version";
+"settings.updates" = "Updates";
+
+"shortcut.range" = "%@1 to %@0";
+
+"language.system" = "System";
+"language.english" = "English";
+"language.simplifiedChinese" = "简体中文";
+
+"hotkeys.enabling" = "Enabling shortcuts...";
+"hotkeys.enabled" = "Shortcuts enabled";
+"hotkeys.partialFailures" = "Some shortcuts are unavailable: %@";
+
+"launchAtLogin.enabled" = "DockKey will open at login";
+"launchAtLogin.failed" = "Launch at login failed: %@";
+
+"update.checking" = "Checking for updates...";
+"update.latest" = "You are up to date";
+"update.foundDownloading" = "Found %@, downloading...";
+"update.downloadedOpening" = "Downloaded %@, opening installer";
+"update.failed" = "Update failed: %@";
+"update.error.rateLimited" = "GitHub API rate limit reached. Try again later.";
+"update.error.releaseNotFound" = "No GitHub Release found";
+"update.error.lookupFailed" = "Could not read GitHub version info";
+"update.error.invalidReleaseData" = "Could not parse GitHub release data";
+"update.error.noDownloadAsset" = "No downloadable arm64 installer found";
+"update.error.downloadFailed" = "Installer download failed";
+
+"version.display" = "Version %@";
+"version.development" = "Development Build";

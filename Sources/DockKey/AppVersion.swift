@@ -5,11 +5,7 @@ struct AppVersion {
     let build: String
 
     var displayText: String {
-        "版本 \(version)"
-    }
-
-    var copyText: String {
-        "\(AppInfo.name) \(version)"
+        L10n.tr("version.display", version)
     }
 
     static let current: AppVersion = {
@@ -18,7 +14,7 @@ struct AppVersion {
         let build = infoDictionary?["CFBundleVersion"] as? String
 
         return AppVersion(
-            version: nonEmpty(version) ?? "开发版",
+            version: nonEmpty(version) ?? L10n.tr("version.development"),
             build: nonEmpty(build) ?? "-"
         )
     }()
