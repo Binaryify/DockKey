@@ -6,6 +6,12 @@ All notable changes to DockKey will be documented in this file.
 
 ## Unreleased
 
+## 0.4.1 - 2026-06-12
+
+### Fixed
+
+- Fixed a crash when switching languages in the packaged app.
+
 ## 0.4.0 - 2026-06-12
 
 ### Added

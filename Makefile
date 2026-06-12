@@ -1,8 +1,8 @@
 APP_NAME := DockKey
 BUNDLE_ID := dev.binaryify.dockkey
 EXECUTABLE_NAME := DockKey
-VERSION := 0.4.0
-BUILD_NUMBER := 4
+VERSION := 0.4.1
+BUILD_NUMBER := 5
 CONFIG := release
 BUILD_DIR := build
 DIST_DIR := dist

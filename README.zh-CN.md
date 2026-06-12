@@ -75,7 +75,7 @@ build/DockKey.app
 指定版本号打包：
 
 ```sh
-make app VERSION=0.4.0 BUILD_NUMBER=4
+make app VERSION=0.4.1 BUILD_NUMBER=5
 ```
 
 生成分发包：

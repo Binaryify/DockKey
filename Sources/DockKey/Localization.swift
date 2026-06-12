@@ -77,13 +77,16 @@ enum L10n {
             return mainValue
         }
 
-        #if SWIFT_PACKAGE
-        let moduleValue = Bundle.module.localizedString(forKey: key, value: nil, table: nil)
+        if
+            let resourceBundle = developmentResourceBundle,
+            resourceBundle != Bundle.main
+        {
+            let resourceValue = resourceBundle.localizedString(forKey: key, value: nil, table: nil)
 
-        if moduleValue != key {
-            return moduleValue
+            if resourceValue != key {
+                return resourceValue
+            }
         }
-        #endif
 
         return key
     }
@@ -110,10 +113,22 @@ enum L10n {
     private static var candidateBundles: [Bundle] {
         var bundles = [Bundle.main]
 
-        #if SWIFT_PACKAGE
-        bundles.append(Bundle.module)
-        #endif
+        if
+            let resourceBundle = developmentResourceBundle,
+            resourceBundle != Bundle.main
+        {
+            bundles.append(resourceBundle)
+        }
 
         return bundles
+    }
+
+    private static var developmentResourceBundle: Bundle? {
+        let executableURL = URL(fileURLWithPath: CommandLine.arguments[0])
+        let bundleURL = executableURL
+            .deletingLastPathComponent()
+            .appendingPathComponent("DockKey_DockKey.bundle")
+
+        return Bundle(url: bundleURL)
     }
 }
