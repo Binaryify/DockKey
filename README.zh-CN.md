@@ -35,7 +35,7 @@ xattr -r -d com.apple.quarantine /Applications/DockKey.app
 
 ## 为什么做 DockKey
 
-这个项目的目标是替代很久没有更新的 [Snap](https://apps.apple.com/us/app/snap/id418073146) 类工作流。Snap 的功能很好，但 App Store 页面显示它的版本历史停在 2012 年的 1.5 版本；在 Apple Silicon Mac 上，Intel-only App 需要依赖 Rosetta。Apple 官方已经说明 Rosetta 会在未来 macOS 版本结束完整支持；macOS 28 开始，Rosetta 功能只会为部分老旧游戏保留有限兼容。
+这个项目的目标是替代很久没有更新的 [Snap](https://apps.apple.com/us/app/snap/id418073146) 这个 App。Snap 的功能很好，但 App Store 页面显示它的版本历史停在 2012 年的 1.5 版本；在 Apple Silicon Mac 上，Intel-only App 需要依赖 Rosetta。Apple 官方已经说明 Rosetta 会在未来 macOS 版本结束完整支持；macOS 28 开始，Rosetta 功能只会为部分老旧游戏保留有限兼容。
 
 Apple 官方说明：[Using Intel-based apps on a Mac with Apple silicon](https://support.apple.com/en-us/102527)。
 

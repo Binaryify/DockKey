@@ -35,7 +35,7 @@ Then open DockKey again.
 
 ## Why DockKey
 
-DockKey is designed as a modern Apple Silicon replacement for the long-unmaintained [Snap](https://apps.apple.com/us/app/snap/id418073146)-style workflow. Snap is still useful, but its App Store version history shows version 1.5 from 2012, and Intel-only apps on Apple Silicon depend on Rosetta. Apple states that full Rosetta support will end in a future macOS version, with macOS 28 keeping only limited compatibility for some older games.
+DockKey is designed as a modern Apple Silicon replacement for the long-unmaintained [Snap](https://apps.apple.com/us/app/snap/id418073146) app. Snap is still useful, but its App Store version history shows version 1.5 from 2012, and Intel-only apps on Apple Silicon depend on Rosetta. Apple states that full Rosetta support will end in a future macOS version, with macOS 28 keeping only limited compatibility for some older games.
 
 Apple reference: [Using Intel-based apps on a Mac with Apple silicon](https://support.apple.com/en-us/102527).
 
