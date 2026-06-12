@@ -4,9 +4,21 @@
 
 DockKey is a tiny native Apple Silicon macOS menu bar app for switching Dock apps with number shortcuts.
 
-It is designed as a modern Apple Silicon replacement for the long-unmaintained [Snap](https://apps.apple.com/us/app/snap/id418073146)-style workflow. Snap is still useful, but its App Store version history shows version 1.5 from 2012, and Intel-only apps on Apple Silicon depend on Rosetta. Apple states that full Rosetta support will end in a future macOS version, with macOS 28 keeping only limited compatibility for some older games. DockKey therefore ships as an `arm64` app and focuses on the native Apple Silicon path.
+DockKey is built for Apple Silicon Mac and ships as an `arm64` app.
 
-Apple reference: [Using Intel-based apps on a Mac with Apple silicon](https://support.apple.com/en-us/102527).
+## Install
+
+1. Open the downloaded DMG.
+2. Drag `DockKey.app` to `Applications`.
+3. Open DockKey from `Applications`.
+
+If macOS blocks a manually downloaded build or says the app is damaged, remove the quarantine attribute after installing:
+
+```sh
+xattr -r -d com.apple.quarantine /Applications/DockKey.app
+```
+
+Then open DockKey again.
 
 ## Features
 
@@ -21,9 +33,33 @@ Apple reference: [Using Intel-based apps on a Mac with Apple silicon](https://su
 - Shows the app version in settings and supports copying version info.
 - Can check GitHub Releases for updates and download the latest DMG.
 
+## Why DockKey
+
+DockKey is designed as a modern Apple Silicon replacement for the long-unmaintained [Snap](https://apps.apple.com/us/app/snap/id418073146)-style workflow. Snap is still useful, but its App Store version history shows version 1.5 from 2012, and Intel-only apps on Apple Silicon depend on Rosetta. Apple states that full Rosetta support will end in a future macOS version, with macOS 28 keeping only limited compatibility for some older games.
+
+Apple reference: [Using Intel-based apps on a Mac with Apple silicon](https://support.apple.com/en-us/102527).
+
 See [CHANGELOG.md](CHANGELOG.md) for release history.
 
-## Build
+## Notes
+
+DockKey reads the local Dock preferences from:
+
+```text
+~/Library/Preferences/com.apple.dock.plist
+```
+
+It uses macOS global hot keys, so the automatic Dock shortcuts do not require Accessibility permission.
+
+Launch at login uses a user LaunchAgent:
+
+```text
+~/Library/LaunchAgents/dev.binaryify.dockkey.loginitem.plist
+```
+
+## Development
+
+Build the app:
 
 ```sh
 make app
@@ -51,12 +87,6 @@ make release-artifacts
 
 The DMG contains `DockKey.app` and an `Applications` shortcut for drag-and-drop installation.
 
-If macOS blocks a manually downloaded build because it is quarantined, remove the quarantine attribute after installing:
-
-```sh
-xattr -r -d com.apple.quarantine /Applications/DockKey.app
-```
-
 Run during development:
 
 ```sh
@@ -73,19 +103,3 @@ iconutil -c icns Assets/AppIcon.iconset -o Assets/AppIcon.icns
 ```
 
 The app bundle only ships the compact `.icns` and the menu bar template icon. `AppIconPreview.png` is kept only for local inspection.
-
-## Notes
-
-DockKey reads the local Dock preferences from:
-
-```text
-~/Library/Preferences/com.apple.dock.plist
-```
-
-It uses macOS global hot keys, so the automatic Dock shortcuts do not require Accessibility permission.
-
-Launch at login uses a user LaunchAgent:
-
-```text
-~/Library/LaunchAgents/dev.binaryify.dockkey.loginitem.plist
-```
