@@ -19,6 +19,9 @@ Apple 官方说明：[Using Intel-based apps on a Mac with Apple silicon](https:
 - 支持显示/隐藏 Dock 图标。
 - 支持登录后自动启动。
 - 设置页显示版本号，并支持复制版本信息。
+- 支持检查 GitHub Releases 更新，并下载最新 DMG。
+
+查看 [CHANGELOG.zh-CN.md](CHANGELOG.zh-CN.md) 了解版本历史。
 
 ## 构建
 

@@ -12,7 +12,7 @@ struct PreferencesView: View {
             settings
                 .padding(EdgeInsets(top: 20, leading: 22, bottom: 22, trailing: 22))
         }
-        .frame(width: 560, height: 430)
+        .frame(width: 560, height: 480)
         .background(Color(nsColor: .windowBackgroundColor))
     }
 
@@ -105,6 +105,25 @@ struct PreferencesView: View {
                     } label: {
                         Label("复制", systemImage: "doc.on.doc")
                     }
+                }
+            }
+
+            SettingRow(title: "更新") {
+                HStack(spacing: 10) {
+                    if !model.updateStatus.isEmpty {
+                        Text(model.updateStatus)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+
+                    Spacer()
+
+                    Button {
+                        model.checkForUpdates()
+                    } label: {
+                        Label(model.isCheckingForUpdates ? "检查中" : "检查更新", systemImage: "arrow.down.circle")
+                    }
+                    .disabled(model.isCheckingForUpdates)
                 }
             }
         }

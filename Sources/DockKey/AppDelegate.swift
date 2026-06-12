@@ -4,9 +4,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let model = AppModel()
     private var statusItem: NSStatusItem?
     private var preferencesWindowController: PreferencesWindowController?
+    private var quitEventMonitor: Any?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.applicationIconImage = AppIconProvider.appIcon(size: NSSize(width: 128, height: 128))
+        configureMainMenu()
+        configureKeyboardShortcuts()
 
         model.onDockAppsChanged = { [weak self] in
             self?.rebuildStatusMenu()
@@ -29,6 +32,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationWillTerminate(_ notification: Notification) {
         model.stop()
+
+        if let quitEventMonitor {
+            NSEvent.removeMonitor(quitEventMonitor)
+        }
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
@@ -51,6 +58,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         model.refreshDockApps(force: true)
     }
 
+    @objc private func checkForUpdates() {
+        model.checkForUpdates()
+        showPreferences()
+    }
+
     @objc private func showAbout() {
         let alert = NSAlert()
         alert.messageText = AppInfo.name
@@ -66,6 +78,42 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc private func activateMenuItemApp(_ sender: NSMenuItem) {
         model.activateShortcut(slot: sender.tag)
+    }
+
+    private func configureMainMenu() {
+        let mainMenu = NSMenu()
+        let appMenuItem = NSMenuItem()
+        let appMenu = NSMenu()
+
+        appMenu.addItem(NSMenuItem(title: "关于 \(AppInfo.name)", action: #selector(showAbout), keyEquivalent: ""))
+        appMenu.addItem(NSMenuItem.separator())
+        appMenu.addItem(NSMenuItem(title: "退出 \(AppInfo.name)", action: #selector(quit), keyEquivalent: "q"))
+
+        appMenuItem.submenu = appMenu
+        mainMenu.addItem(appMenuItem)
+        NSApp.mainMenu = mainMenu
+    }
+
+    private func configureKeyboardShortcuts() {
+        guard quitEventMonitor == nil else {
+            return
+        }
+
+        quitEventMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
+            let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+            let disallowedFlags: NSEvent.ModifierFlags = [.option, .control, .shift]
+
+            guard
+                flags.contains(.command),
+                flags.intersection(disallowedFlags).isEmpty,
+                event.charactersIgnoringModifiers?.lowercased() == "q"
+            else {
+                return event
+            }
+
+            NSApp.terminate(nil)
+            return nil
+        }
     }
 
     private func configureStatusItem() {
@@ -112,6 +160,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "偏好设置...", action: #selector(showPreferences), keyEquivalent: ","))
         menu.addItem(NSMenuItem(title: "关于 \(AppInfo.name)", action: #selector(showAbout), keyEquivalent: ""))
+        menu.addItem(NSMenuItem(title: "检查更新", action: #selector(checkForUpdates), keyEquivalent: ""))
         menu.addItem(NSMenuItem(title: "刷新 Dock App", action: #selector(refreshDockApps), keyEquivalent: "r"))
 
         let visibleShortcutKeys = ShortcutKey.allCases.filter { model.app(for: $0) != nil }

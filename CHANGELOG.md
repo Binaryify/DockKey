@@ -1,0 +1,31 @@
+# Changelog
+
+[中文变更日志](CHANGELOG.zh-CN.md)
+
+All notable changes to DockKey will be documented in this file.
+
+## Unreleased
+
+## 0.2.0 - 2026-06-12
+
+### Added
+
+- Added manual update checks from the settings window and menu bar menu.
+- Downloads the latest GitHub Release DMG automatically when a newer version is available.
+- Added `Command+Q` quit support when DockKey is active.
+
+### Changed
+
+- Simplified the app menu by keeping only About and Quit.
+
+## 0.1.0
+
+### Added
+
+- Initial Apple Silicon `arm64` DockKey app.
+- Dock app switching with `Command+1` through `Command+0`.
+- Toggle behavior for frontmost mapped apps.
+- Menu bar and Dock visibility settings.
+- Launch at login support.
+- Version display and copy action.
+- Zip and DMG packaging.

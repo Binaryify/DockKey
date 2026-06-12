@@ -19,6 +19,9 @@ Apple reference: [Using Intel-based apps on a Mac with Apple silicon](https://su
 - Can show or hide the Dock icon.
 - Can start automatically after login.
 - Shows the app version in settings and supports copying version info.
+- Can check GitHub Releases for updates and download the latest DMG.
+
+See [CHANGELOG.md](CHANGELOG.md) for release history.
 
 ## Build
 

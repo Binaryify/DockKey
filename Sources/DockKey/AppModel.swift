@@ -1,3 +1,4 @@
+import AppKit
 import Combine
 import Foundation
 
@@ -6,6 +7,8 @@ final class AppModel: ObservableObject {
     @Published private(set) var hotKeyStatus = "正在启用快捷键..."
     @Published private(set) var launchAtLoginMessage = ""
     @Published private(set) var launchAtLoginEnabled: Bool
+    @Published private(set) var updateStatus = ""
+    @Published private(set) var isCheckingForUpdates = false
     @Published var showsStatusItem: Bool {
         didSet {
             UserDefaults.standard.set(showsStatusItem, forKey: Self.showsStatusItemDefaultsKey)
@@ -33,6 +36,7 @@ final class AppModel: ObservableObject {
     private let dockAppReader = DockAppReader()
     private let appLauncher = AppLauncher()
     private let launchAtLoginManager = LaunchAtLoginManager()
+    private let updateManager = AppUpdateManager()
     private let hotKeyManager = HotKeyManager()
     private var dockSignature = ""
     private var refreshTimer: Timer?
@@ -108,6 +112,44 @@ final class AppModel: ObservableObject {
         } catch {
             launchAtLoginEnabled = launchAtLoginManager.isEnabled
             launchAtLoginMessage = "开机启动设置失败: \(error.localizedDescription)"
+        }
+    }
+
+    func checkForUpdates() {
+        guard !isCheckingForUpdates else {
+            return
+        }
+
+        isCheckingForUpdates = true
+        updateStatus = "正在检查更新..."
+
+        Task {
+            do {
+                guard let update = try await updateManager.latestUpdate() else {
+                    await MainActor.run {
+                        self.updateStatus = "已是最新版本"
+                        self.isCheckingForUpdates = false
+                    }
+                    return
+                }
+
+                await MainActor.run {
+                    self.updateStatus = "发现 \(update.tagName)，正在下载..."
+                }
+
+                let downloadedURL = try await updateManager.download(update)
+
+                await MainActor.run {
+                    self.updateStatus = "已下载 \(update.tagName)，正在打开安装包"
+                    self.isCheckingForUpdates = false
+                    NSWorkspace.shared.open(downloadedURL)
+                }
+            } catch {
+                await MainActor.run {
+                    self.updateStatus = "更新失败: \(error.localizedDescription)"
+                    self.isCheckingForUpdates = false
+                }
+            }
         }
     }
 
