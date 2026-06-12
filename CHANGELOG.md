@@ -6,6 +6,16 @@ All notable changes to DockKey will be documented in this file.
 
 ## Unreleased
 
+## 0.3.0 - 2026-06-12
+
+### Changed
+
+- Hides the internal build number from the visible version text.
+
+### Documentation
+
+- Added the quarantine removal command for manually downloaded builds.
+
 ## 0.2.0 - 2026-06-12
 
 ### Added

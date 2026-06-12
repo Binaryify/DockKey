@@ -5,11 +5,11 @@ struct AppVersion {
     let build: String
 
     var displayText: String {
-        "版本 \(version) (\(build))"
+        "版本 \(version)"
     }
 
     var copyText: String {
-        "\(AppInfo.name) \(version) (\(build))"
+        "\(AppInfo.name) \(version)"
     }
 
     static let current: AppVersion = {

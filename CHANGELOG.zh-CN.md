@@ -6,6 +6,16 @@
 
 ## Unreleased
 
+## 0.3.0 - 2026-06-12
+
+### Changed
+
+- 版本展示不再显示内部 build number。
+
+### Documentation
+
+- 补充手动下载版本被 quarantine 拦截时的解除命令。
+
 ## 0.2.0 - 2026-06-12
 
 ### Added

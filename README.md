@@ -38,7 +38,7 @@ build/DockKey.app
 Build with a specific version:
 
 ```sh
-make app VERSION=0.2.0 BUILD_NUMBER=2
+make app VERSION=0.3.0 BUILD_NUMBER=3
 ```
 
 Create distributable archives:
@@ -50,6 +50,12 @@ make release-artifacts
 ```
 
 The DMG contains `DockKey.app` and an `Applications` shortcut for drag-and-drop installation.
+
+If macOS blocks a manually downloaded build because it is quarantined, remove the quarantine attribute after installing:
+
+```sh
+xattr -r -d com.apple.quarantine /Applications/DockKey.app
+```
 
 Run during development:
 

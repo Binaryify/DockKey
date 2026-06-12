@@ -38,7 +38,7 @@ build/DockKey.app
 指定版本号打包：
 
 ```sh
-make app VERSION=0.2.0 BUILD_NUMBER=2
+make app VERSION=0.3.0 BUILD_NUMBER=3
 ```
 
 生成分发包：
@@ -50,6 +50,12 @@ make release-artifacts
 ```
 
 DMG 里包含 `DockKey.app` 和 `Applications` 快捷入口，方便拖拽安装。
+
+如果手动下载的版本被 macOS quarantine 拦截，安装后可以移除 quarantine 属性：
+
+```sh
+xattr -r -d com.apple.quarantine /Applications/DockKey.app
+```
 
 开发期运行：
 
