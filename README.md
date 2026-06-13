@@ -6,6 +6,10 @@ DockKey is a tiny native Apple Silicon macOS menu bar app for switching Dock app
 
 DockKey is built for Apple Silicon Mac and ships as an `arm64` app.
 
+## Screenshot
+
+![DockKey settings window in English](Docs/screenshot-en.png)
+
 ## Install
 
 1. Open the downloaded DMG.
